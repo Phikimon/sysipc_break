@@ -1,0 +1,16 @@
+strace: Process 5806 attached
+[pid  5805] 1509489879.906882 shmget(0x16ad, 65536, IPC_CREAT|0666) = 17006620
+[pid  5806] 1509489879.906954 shmget(0x16ad, 65536, 000 <unfinished ...>
+[pid  5805] 1509489879.906987 shmctl(17006620, IPC_STAT,  <unfinished ...>
+[pid  5806] 1509489879.907004 <... shmget resumed> ) = 17006620
+[pid  5805] 1509489879.907016 <... shmctl resumed> {shm_perm={uid=1000, gid=1000, mode=0666, key=5805, cuid=1000, cgid=1000}, shm_segsz=65536, shm_cpid=5805, shm_lpid=0, shm_nattch=0, shm_atime=0, shm_dtime=0, shm_ctime=1509489879}) = 0
+[pid  5805] 1509489879.907049 shmctl(17006620, IPC_STAT,  <unfinished ...>
+[pid  5806] 1509489879.907068 shmat(17006620, NULL, 0 <unfinished ...>
+[pid  5805] 1509489879.907094 <... shmctl resumed> {shm_perm={uid=1000, gid=1000, mode=0666, key=5805, cuid=1000, cgid=1000}, shm_segsz=65536, shm_cpid=5805, shm_lpid=0, shm_nattch=1, shm_atime=0, shm_dtime=0, shm_ctime=1509489879}) = 0
+[pid  5806] 1509489879.907121 <... shmat resumed> ) = 0x7f6e99c78000
+[pid  5805] 1509489879.907193 write(2, "Bug found! lpid = 0; nattch = 1\n", 32Bug found! lpid = 0; nattch = 1
+) = 32
+[pid  5805] 1509489879.907257 shmctl(17006620, IPC_RMID, NULL) = 0
+[pid  5805] 1509489879.908625 +++ exited with 0 +++
+1509489879.909127 --- SIGINT {si_signo=SIGINT, si_code=SI_USER, si_pid=5805, si_uid=1000} ---
+1509489880.907435 +++ exited with 0 +++
