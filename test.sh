@@ -9,7 +9,7 @@ if [ $1 -eq 1 ]
 then
     for (( i=1; i <= $2; i++ ))
     do
-    strace -e trace=ipc,write -fv -ttt ./kernel_bug 2> ./log_$i &
+    ~/localGIT/strace/strace -e trace=ipc,write -fv -ttt ./kernel_bug 2> ./log_$i &
     done
 else
     for (( i=1; i <= $2; i++ ))

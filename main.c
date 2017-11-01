@@ -19,7 +19,7 @@ int main(void)
             //shmctl
             syscall(31, shmid, IPC_STAT, &ds);
         }
-        if (ds.shm_lpid == 0)
+        if (ds.shm_nattch > 1)
             printf("Bug found! lpid = %d; nattch = %d\n",
                                         ds.shm_lpid, ds.shm_nattch);
         //shmctl
