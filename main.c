@@ -1,6 +1,5 @@
 #define _GNU_SOURCE
 #include "stdio.h"
-#include <sys/syscall.h>
 #include "unistd.h"
 #include "sys/types.h"
 #include "sys/ipc.h"
@@ -13,22 +12,17 @@ int main(void)
     struct shmid_ds ds = {0};
 
     if (fork_ret > 0) {
-        //shmget
-        shmid = (int) syscall(29, getpid(), 65536, IPC_CREAT|0666);
+        shmid = shmget(getpid(), 65536, IPC_CREAT|0666);
         while (ds.shm_nattch < 1) {
-            //shmctl
-            syscall(31, shmid, IPC_STAT, &ds);
+            shmctl(shmid, IPC_STAT, &ds);
         }
         if (ds.shm_nattch > 1)
             printf("Bug found! lpid = %d; nattch = %d\n",
                                         ds.shm_lpid, ds.shm_nattch);
-        //shmctl
-        syscall(31, shmid, 0, IPC_RMID);
+        shmctl(shmid, 0, IPC_RMID);
     } else {
-        //shmget
-        shmid = (int) syscall(29, getppid(), 65536, 0);
-        //shmat
-        syscall(30, shmid, NULL, 0);
+        shmid = shmget(getppid(), 65536, 0);
+        shmat(shmid, NULL, 0);
         sleep(1);
     }
     return 0;
