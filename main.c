@@ -22,9 +22,12 @@ int main(void)
         if (ds.shm_lpid == 0)
             printf("Bug found! lpid = %d; nattch = %d\n",
                                         ds.shm_lpid, ds.shm_nattch);
+        //shmctl
         syscall(31, shmid, 0, IPC_RMID);
     } else {
+        //shmget
         shmid = (int) syscall(29, getppid(), 65536, 0);
+        //shmat
         syscall(30, shmid, NULL, 0);
         sleep(1);
     }
