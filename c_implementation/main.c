@@ -30,7 +30,7 @@ int main(void)
                 shmid = shmget(getpid(), 65536, 0);
             } while (shmid < 0);
             shmat(shmid, NULL, 0);
-            if (shall_child_sleep)
+            if (shall_child_sleep != '0')
                 sleep(1);
             return 0;
         }
