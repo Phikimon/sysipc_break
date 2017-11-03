@@ -1,11 +1,12 @@
-SHM_ATIME_OFFSET equ 56
-SHM_LPID_OFFSET equ 84
+; Constants for 'struct shmid_ds'
+SHM_ATIME_OFFSET  equ 56
+SHM_LPID_OFFSET   equ 84
 SHM_NATTCH_OFFSET equ 88
-SIZEOF_SHMID_DS equ 112
-
+SIZEOF_SHMID_DS   equ 112
+; Constants for 'struct timespec'
 SIZEOF_TIMESPEC_S equ 18
-TV_SEC_OFFSET equ 0
-TV_NSEC_OFFSET equ 8
+TV_SEC_OFFSET     equ 0
+TV_NSEC_OFFSET    equ 8
 
 %macro exit 1 ; < exit return value
     mov    rdi, %1    ; return value <- %1
