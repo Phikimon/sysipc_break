@@ -7,23 +7,31 @@
 
 int main(void)
 {
-    int fork_ret = fork();
-    int shmid = -1;
-    struct shmid_ds ds = {0};
-
-    if (fork_ret > 0) {
-        shmid = shmget(getpid(), 65536, IPC_CREAT|0666);
-        while (ds.shm_nattch < 1) {
-            shmctl(shmid, IPC_STAT, &ds);
+    int c = getchar();
+    while (1) {
+        int fork_ret = fork();
+        int shmid = -1;
+        struct shmid_ds ds = {0};
+        if (fork_ret > 0) {
+            shmid = shmget(fork_ret, 65536, IPC_CREAT|0666);
+            while (ds.shm_nattch < 1) {
+                shmctl(shmid, IPC_STAT, &ds);
+            }
+            if ( ((ds.shm_atime == 0 || ds.shm_lpid == 0) && (c == 'l')) ||
+                 (        (ds.shm_nattch > 1)             && (c == 'n'))  ) {
+                printf("Bug found! shm_atime = %d; lpid = %d; nattch = %d\n",
+                                   ds.shm_atime, ds.shm_lpid, ds.shm_nattch);
+                return 0;
+            }
+            shmctl(shmid, 0, IPC_RMID);
+        } else {
+            do {
+                shmid = shmget(getpid(), 65536, 0);
+            } while (shmid < 0);
+            shmat(shmid, NULL, 0);
+            sleep(1);
+            return 0;
         }
-        if (ds.shm_nattch > 1)
-            printf("Bug found! lpid = %d; nattch = %d\n",
-                                        ds.shm_lpid, ds.shm_nattch);
-        shmctl(shmid, 0, IPC_RMID);
-    } else {
-        shmid = shmget(getppid(), 65536, 0);
-        shmat(shmid, NULL, 0);
-        sleep(1);
     }
     return 0;
 }
