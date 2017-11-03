@@ -8,14 +8,14 @@ TV_SEC_OFFSET equ 0
 TV_NSEC_OFFSET equ 8
 
 %macro exit 1 ; < exit return value
-        mov    rdi, %1    ; return value <- %1
-        mov    rax, 3Ch   ; syscall <- exit
-        syscall
+    mov    rdi, %1    ; return value <- %1
+    mov    rax, 3Ch   ; syscall <- exit
+    syscall
 %endmacro
 
 ;Entry = string address, string length
 ;Destr = RDI, RDX, RSI, RAX
-%macro printdata 2
+%macro write_to_stdout 2
     mov     rdi, 1  ; file descriptor  <- stdout
     mov     rdx, %2 ; buffer size      <- %2
     mov     rsi, %1 ; buffer to print  <- %1
@@ -27,13 +27,13 @@ TV_NSEC_OFFSET equ 8
 
 ;Entry = address of allocated memory
 %macro getchar 1
-            mov     rdi, 0  ; file descriptor <- stdin
-            mov     rsi, %1 ; buffer          <- %1
-            mov     rdx, 1  ; buffer size     <- 1
-            mov     rax, 0  ; syscall         <- sys_read
-            syscall
-            test rax, rax ; if no byte is read,
-            je __exit
+    mov     rdi, 0  ; file descriptor <- stdin
+    mov     rsi, %1 ; buffer          <- %1
+    mov     rdx, 1  ; buffer size     <- 1
+    mov     rax, 0  ; syscall         <- sys_read
+    syscall
+    test rax, rax ; if no byte is read,
+    je __exit
 %endmacro
 
 %macro define_string 2 ; < name, string
@@ -112,19 +112,19 @@ char_equals_n: ; (...) || ( (ds.shm_nattch > 1) && (c == 'n') )
     jne bug_not_found
 
 print_message:
-    printdata MSG1, MSG1LEN
+    write_to_stdout MSG1, MSG1LEN
     mov rax, [STRUCT_DS + SHM_ATIME_OFFSET]
     call PrintDec
     ;
-    printdata MSG2, MSG2LEN
+    write_to_stdout MSG2, MSG2LEN
     mov eax, [STRUCT_DS + SHM_LPID_OFFSET]
     call PrintDec
     ;
-    printdata MSG3, MSG3LEN
+    write_to_stdout MSG3, MSG3LEN
     mov rax, [STRUCT_DS + SHM_NATTCH_OFFSET]
     call PrintDec
     ;
-    printdata MSG4, MSG4LEN
+    write_to_stdout MSG4, MSG4LEN
     ;
     exit 0
 ;====================================================
@@ -203,7 +203,7 @@ Pcondition:
             ; Print stuff
             lea r15, [str + STRLEN + digit_cnt + 1]
             neg digit_cnt
-            printdata r15, digit_cnt
+            write_to_stdout r15, digit_cnt
             ; Epilogue
             add rsp, STRLEN
             pop rbp
